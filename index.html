@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>رتِّل — منصة إدارة مراكز تحفيظ القرآن الكريم</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ============================================================
+            CSS VARIABLES & RESET
+        ============================================================ */
+        :root {
+            --color-primary:    #1B4332;
+            --color-secondary:  #2D6A4F;
+            --color-gold:       #D4AF37;
+            --color-gold-dark:  #B8860B;
+            --color-cream:      #FAF7F0;
+            --color-white:      #FFFFFF;
+            --color-text:       #1A1A1A;
+            --color-muted:      #6B7280;
+            --radius-sm:        8px;
+            --radius-md:        16px;
+            --radius-lg:        24px;
+            --shadow-sm:        0 1px 3px rgba(0,0,0,.10);
+            --shadow-md:        0 4px 12px rgba(0,0,0,.15);
+            --shadow-lg:        0 8px 32px rgba(0,0,0,.20);
+            --transition:       all 0.35s ease;
+            --font-main:        'Amiri', serif;
+            --font-alt:         'Scheherazade New', serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-main);
+            background: var(--color-cream);
+            color: var(--color-text);
+            direction: rtl;
+            overflow-x: hidden;
+        }
+        a   { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+        button { cursor: pointer; font-family: var(--font-main); border: none; outline: none; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--color-cream); }
+        ::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 99px; }
+
+        /* ============================================================
+            UTILITIES
+        ============================================================ */
+        .container  { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section    { padding: 96px 0; }
+        .section-sm { padding: 64px 0; }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--color-primary); color: var(--color-white);
+            padding: 14px 32px; border-radius: 99px;
+            font-size: 1.15rem; transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(27,67,50,.3);
+        }
+        .btn-primary:hover { background: var(--color-secondary); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(27,67,50,.4); }
+
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            border: 2px solid var(--color-primary); color: var(--color-primary);
+            padding: 12px 32px; border-radius: 99px;
+            font-size: 1.15rem; background: transparent; transition: var(--transition);
+        }
+        .btn-outline:hover { background: var(--color-primary); color: var(--color-white); }
+
+        .badge-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(212,175,55,.12); color: var(--color-gold-dark);
+            border: 1px solid rgba(212,175,55,.3);
+            padding: 6px 16px; border-radius: 99px; font-size: .9rem;
+        }
+        .badge-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--color-gold); animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity:1; transform:scale(1); }
+            50%      { opacity:.5; transform:scale(1.3); }
+        }
+
+        .section-title { text-align: center; margin-bottom: 56px; }
+        .section-title .label {
+            display: inline-block; font-size: .85rem;
+            letter-spacing: .1em; color: var(--color-gold-dark); margin-bottom: 12px;
+        }
+        .section-title h2 { font-size: clamp(2rem,4vw,2.8rem); color: var(--color-primary); line-height:1.3; }
+        .section-title p  { color: var(--color-muted); font-size: 1.1rem; max-width: 560px; margin: 16px auto 0; line-height: 1.8; }
+        .title-line { width: 64px; height: 3px; background: linear-gradient(90deg,var(--color-gold),var(--color-gold-dark)); margin: 16px auto 0; border-radius: 99px; }
+
+        .animate-on-scroll { opacity: 0; transform: translateY(40px); transition: opacity .7s ease, transform .7s ease; }
+        .animate-on-scroll.from-left  { transform: translateX(-40px); }
+        .animate-on-scroll.from-right { transform: translateX( 40px); }
+        .animate-on-scroll.visible    { opacity: 1; transform: translate(0,0); }
+
+        /* ============================================================
+            NAVBAR
+        ============================================================ */
+        #navbar {
+            position: fixed; top: 0; right: 0; left: 0; z-index: 1000;
+            padding: 18px 0; transition: var(--transition);
+        }
+        #navbar.scrolled {
+            background: rgba(250,247,240,.96);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 20px rgba(27,67,50,.1);
+            padding: 12px 0;
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+
+        /* ===== اللوجو المعدّل: صورة logo.jpeg ===== */
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            transition: var(--transition);
+        }
+        .nav-logo:hover .logo-img { transform: scale(1.06); }
+
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links a { font-size: 1.05rem; color: var(--color-primary); position: relative; transition: color .25s; }
+        .nav-links a::after { content:''; position:absolute; bottom:-4px; right:0; width:0; height:2px; background:var(--color-gold); transition:width .3s; }
+        .nav-links a:hover { color: var(--color-gold-dark); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta { display: flex; align-items: center; gap: 12px; }
+        .nav-btn-login {
+            background: var(--color-primary); color: #fff;
+            padding: 10px 24px; border-radius: 99px; font-size: 1rem; transition: var(--transition);
+        }
+        .nav-btn-login:hover { background: var(--color-secondary); transform: translateY(-1px); }
+        .nav-btn-register {
+            border: 1.5px solid var(--color-primary); color: var(--color-primary);
+            padding: 9px 22px; border-radius: 99px; font-size: 1rem;
+            background: transparent; transition: var(--transition);
+        }
+        .nav-btn-register:hover { background: var(--color-primary); color: #fff; }
+
+        .hamburger { display:none; flex-direction:column; gap:5px; background:none; padding:4px; }
+        .hamburger span { display:block; width:26px; height:2px; background:var(--color-primary); border-radius:2px; transition:var(--transition); }
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+        #mobile-menu {
+            display:none; position:fixed; top:72px; right:0; left:0; z-index:999;
+            background:var(--color-cream); border-top:1px solid rgba(212,175,55,.2);
+            padding:24px; box-shadow:0 8px 24px rgba(0,0,0,.1);
+            animation: slideDown .3s ease;
+        }
+        #mobile-menu.open { display:block; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+        .mobile-nav-links { list-style:none; margin-bottom:20px; }
+        .mobile-nav-links li { border-bottom:1px solid rgba(212,175,55,.15); }
+        .mobile-nav-links a { display:block; padding:14px 0; font-size:1.15rem; color:var(--color-primary); }
+        .mobile-cta { display:flex; flex-direction:column; gap:10px; }
+        .mobile-cta a { display:block; text-align:center; padding:14px; border-radius:var(--radius-md); font-size:1.1rem; }
+        .mobile-cta .login-m  { background:var(--color-primary); color:#fff; }
+        .mobile-cta .reg-m    { border:1.5px solid var(--color-primary); color:var(--color-primary); }
+
+        /* ============================================================
+            HERO
+        ============================================================ */
+        #hero {
+            padding-top:120px; padding-bottom:80px;
+            background:var(--color-cream); position:relative; overflow:hidden;
+        }
+        #hero::before {
+            content:''; position:absolute; inset:0;
+            background-image:
+                    radial-gradient(circle at 20% 50%,rgba(27,67,50,.04) 0%,transparent 60%),
+                    radial-gradient(circle at 80% 20%,rgba(212,175,55,.06) 0%,transparent 50%);
+            pointer-events:none;
+        }
+        #hero::after {
+            content:''; position:absolute; inset:0;
+            background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231B4332' stroke-width='0.3' opacity='0.07'%3E%3Cpolygon points='30,2 58,16 58,44 30,58 2,44 2,16'/%3E%3Cpolygon points='30,10 50,20 50,40 30,50 10,40 10,20'/%3E%3Cline x1='30' y1='2' x2='30' y2='58'/%3E%3Cline x1='2' y1='16' x2='58' y2='44'/%3E%3Cline x1='2' y1='44' x2='58' y2='16'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events:none;
+        }
+        .hero-inner { display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:center; position:relative; z-index:1; }
+        .hero-content { text-align:right; }
+        .hero-badge   { margin-bottom:20px; }
+
+        .hero-title { font-size:clamp(2.4rem,5vw,4rem); color:var(--color-primary); line-height:1.25; margin-bottom:8px; }
+        .hero-title .highlight { color:var(--color-gold-dark); }
+        .hero-tagline { font-size:clamp(1.1rem,2vw,1.35rem); color:var(--color-muted); margin-bottom:24px; font-style:italic; border-right:3px solid var(--color-gold); padding-right:14px; }
+        .hero-desc    { font-size:1.1rem; color:var(--color-muted); line-height:1.9; margin-bottom:36px; max-width:500px; }
+        .hero-btns    { display:flex; flex-wrap:wrap; gap:14px; margin-bottom:24px; }
+
+        .hero-slider { position:relative; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-lg); aspect-ratio:4/5; max-height:520px; }
+        .hero-slider img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .8s ease; }
+        .hero-slider img.active { opacity:1; }
+        .slider-dots { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:10; }
+        .slider-dot  { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer; transition:var(--transition); }
+        .slider-dot.active { background:#fff; transform:scale(1.3); }
+        .hero-slider::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,rgba(27,67,50,.2) 0%,transparent 60%); z-index:1; pointer-events:none; }
+
+        /* ============================================================
+            FEATURES
+        ============================================================ */
+        #features { background:#fff; }
+        .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+
+        .feature-card {
+            background:var(--color-cream); border-radius:var(--radius-md); padding:36px 28px;
+            border:1px solid rgba(27,67,50,.07); transition:var(--transition); position:relative; overflow:hidden;
+        }
+        .feature-card::before {
+            content:''; position:absolute; top:0; right:0; width:4px; height:0;
+            background:linear-gradient(to bottom,var(--color-gold),var(--color-secondary));
+            border-radius:0 var(--radius-md) 0 0; transition:height .4s;
+        }
+        .feature-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-md); }
+        .feature-card:hover::before { height:100%; }
+
+        .feature-icon {
+            width:60px;
+            height:60px;
+            border-radius:12px;
+            background: #1B4332;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin-bottom:20px;
+            box-shadow:0 4px 12px rgba(27,67,50,.2);
+        }
+
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: #FAF7F0;
+            stroke-width: 1.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .feature-card h3 { font-size:1.2rem; color:var(--color-primary); margin-bottom:10px; }
+        .feature-card p  { color:var(--color-muted); line-height:1.8; font-size:1rem; }
+
+        /* ============================================================
+            ROLES
+        ============================================================ */
+        #roles { background:var(--color-cream); }
+        .roles-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+
+        .role-card { border-radius:var(--radius-lg); overflow:hidden; background:#fff; box-shadow:var(--shadow-sm); transition:var(--transition); }
+        .role-card:hover { transform:translateY(-8px); box-shadow:var(--shadow-lg); }
+        .role-img-wrap { position:relative; overflow:hidden; aspect-ratio:4/3; }
+        .role-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform .5s; }
+        .role-card:hover .role-img-wrap img { transform:scale(1.06); }
+        .role-badge { position:absolute; top:14px; right:14px; background:var(--color-primary); color:#fff; padding:5px 14px; border-radius:99px; font-size:.85rem; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+        .role-body { padding:28px 24px; }
+        .role-body h3 { font-size:1.35rem; color:var(--color-primary); margin-bottom:8px; }
+        .role-body p  { color:var(--color-muted); line-height:1.8; font-size:1rem; }
+        .role-features { list-style:none; margin-top:16px; }
+        .role-features li { display:flex; align-items:center; gap:10px; padding:6px 0; font-size:.95rem; color:var(--color-text); border-bottom:1px solid rgba(27,67,50,.06); }
+        .role-features li:last-child { border-bottom:none; }
+        .role-features li::before { content:'✦'; color:var(--color-gold); font-size:.7rem; flex-shrink:0; }
+
+        /* ============================================================
+            AYAH OF THE DAY
+        ============================================================ */
+        #ayah-day { background:linear-gradient(135deg,var(--color-primary) 0%,var(--color-secondary) 100%); position:relative; overflow:hidden; }
+        #ayah-day::before { content:'﷽'; position:absolute; left:-40px; top:50%; transform:translateY(-50%); font-size:14rem; color:rgba(255,255,255,.03); font-family:var(--font-alt); pointer-events:none; }
+        .ayah-inner { text-align:center; position:relative; z-index:1; max-width:800px; margin:0 auto; }
+        .ayah-label { display:inline-block; background:rgba(212,175,55,.2); border:1px solid rgba(212,175,55,.4); color:var(--color-gold); padding:6px 20px; border-radius:99px; font-size:.9rem; margin-bottom:28px; }
+        #ayah-text  { font-family:var(--font-alt); font-size:clamp(1.6rem,3.5vw,2.4rem); color:#fff; line-height:2; margin-bottom:16px; min-height:80px; }
+        #ayah-ref   { color:rgba(255,255,255,.6); font-size:1rem; margin-bottom:12px; }
+        #ayah-tafsir{ color:rgba(255,255,255,.75); font-size:1.05rem; line-height:1.9; max-width:640px; margin:0 auto 32px; }
+        #ayah-spinner { width:40px; height:40px; border:3px solid rgba(255,255,255,.2); border-top-color:var(--color-gold); border-radius:50%; animation:spin 1s linear infinite; margin:40px auto; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+
+        /* ============================================================
+            PRAYER TIMES
+        ============================================================ */
+        #prayer-times { background:#fff; }
+        .prayer-card { background:var(--color-cream); border-radius:var(--radius-lg); padding:40px; border:1px solid rgba(27,67,50,.07); }
+        .prayer-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:16px; }
+        .prayer-date strong { color:var(--color-primary); display:block; font-size:1.1rem; }
+        .prayer-date span   { color:var(--color-muted); font-size:.95rem; }
+
+        .next-prayer-badge { background:linear-gradient(135deg,var(--color-primary),var(--color-secondary)); color:#fff; padding:14px 24px; border-radius:var(--radius-sm); text-align:center; min-width:180px; }
+        .next-prayer-badge .np-label { font-size:.8rem; opacity:.75; }
+        .next-prayer-badge .np-name   { font-size:1.2rem; font-weight:700; }
+        .next-prayer-badge .np-timer { font-size:1.6rem; font-family:monospace; color:var(--color-gold); letter-spacing:.06em; }
+
+        .prayers-row { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+        .prayer-item { background:#fff; border-radius:var(--radius-md); padding:20px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; border:1.5px solid transparent; transition:var(--transition); box-shadow:var(--shadow-sm); }
+        .prayer-item.active { border-color:var(--color-gold); background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(27,67,50,.05)); }
+
+        .prayer-item .p-icon-svg { width: 36px; height: 36px; margin-bottom: 10px; fill: none; stroke: var(--color-secondary); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .prayer-item.active .p-icon-svg { stroke: var(--color-gold-dark); }
+
+        .prayer-item .p-name { font-size:1rem; color:var(--color-primary); font-weight:700; margin-bottom:6px; }
+        .prayer-item .p-time { font-size:1.1rem; color:var(--color-secondary); font-family:monospace; }
+
+        .prayer-skeleton { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+        .prayer-skeleton .sk { background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:var(--radius-md); height:110px; }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
+        /* ============================================================
+            CTA
+        ============================================================ */
+        #cta { background:linear-gradient(135deg,var(--color-gold-dark) 0%,var(--color-gold) 100%); text-align:center; }
+        #cta h2 { font-size:clamp(1.8rem,3.5vw,2.8rem); color:var(--color-primary); margin-bottom:12px; }
+        #cta p  { color:rgba(27,67,50,.75); font-size:1.1rem; margin-bottom:36px; }
+
+        /* ============================================================
+            FOOTER
+        ============================================================ */
+        footer { background:var(--color-primary); color:rgba(255,255,255,.8); padding:48px 0 24px; }
+        .footer-inner { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:48px; margin-bottom:40px; }
+        .footer-brand .logo-text { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:10px; }
+        .footer-brand p { line-height:1.8; font-size:.95rem; color:rgba(255,255,255,.65); }
+        .footer-col h4 { color:var(--color-gold); margin-bottom:16px; font-size:1.05rem; }
+        .footer-col ul { list-style:none; }
+        .footer-col ul li { margin-bottom:10px; }
+        .footer-col ul li a { color:rgba(255,255,255,.65); font-size:.95rem; transition:color .25s; }
+        .footer-col ul li a:hover { color:var(--color-gold); }
+        .footer-bottom { border-top:1px solid rgba(255,255,255,.1); padding-top:20px; text-align:center; font-size:.85rem; color:rgba(255,255,255,.4); }
+
+        /* ============================================================
+            RESPONSIVE
+        ============================================================ */
+        @media (max-width:1024px) { .features-grid { grid-template-columns:repeat(2,1fr); } }
+        @media (max-width:768px) {
+            .nav-links,.nav-cta { display:none; }
+            .hamburger { display:flex; }
+            .hero-inner { grid-template-columns:1fr; }
+            .hero-slider { max-height:280px; order:-1; }
+            .hero-content,.hero-desc { text-align:center; }
+            .hero-btns { justify-content:center; }
+            .hero-desc { margin:0 auto 32px; }
+            .features-grid,.roles-grid { grid-template-columns:1fr; }
+            .prayers-row,.prayer-skeleton { grid-template-columns:repeat(3,1fr); }
+            .footer-inner { grid-template-columns:1fr; gap:28px; }
+            .section { padding:60px 0; }
+        }
+        @media (max-width:480px) {
+            .prayers-row,.prayer-skeleton { grid-template-columns:repeat(2,1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <div class="container nav-inner">
+
+        <a href="#" class="nav-logo">
+            <img src="assets/images/logo.png" alt="رتِّل" class="logo-img" />
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#">الرئيسية</a></li>
+            <li><a href="#about">عن رتِّل</a></li>
+            <li><a href="#features">المميزات</a></li>
+            <li><a href="#roles">الأدوار</a></li>
+            <li><a href="#portal">بوابة المشتركين</a></li>
+        </ul>
+
+        <div class="nav-cta">
+            <a href="register.php" class="nav-btn-register">إنشاء حساب جديد</a>
+            <a href="login.php"    class="nav-btn-login">الدخول للنظام</a>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="قائمة التنقل">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<div id="mobile-menu">
+    <ul class="mobile-nav-links">
+        <li><a href="#">الرئيسية</a></li>
+        <li><a href="#about">عن رتِّل</a></li>
+        <li><a href="#features">المميزات</a></li>
+        <li><a href="#roles">الأدوار</a></li>
+        <li><a href="#portal">بوابة المشتركين</a></li>
+    </ul>
+    <div class="mobile-cta">
+        <a href="login.php"    class="login-m">الدخول للنظام</a>
+        <a href="register.php" class="reg-m">إنشاء حساب جديد</a>
+    </div>
+</div>
+
+<section id="hero">
+    <div class="container hero-inner">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-pill">
+                    <span class="badge-dot"></span>
+                    أفضل منصة لإدارة حلقات التحفيظ
+                </span>
+            </div>
+
+            <h1 class="hero-title">
+                رتِّل آي الذكر<br />
+                <span class="highlight">بكل إتقان</span>
+            </h1>
+
+            <p class="hero-tagline">رتِّل آياته، فيطمئن قلبك قبل صوتك</p>
+
+            <p class="hero-desc">
+                منصة رتِّل تربط المدير والمعلم والطالب في بيئة واحدة متكاملة —
+                تتبّع التسميع، نظِّم الحلقات، وراقب التقدم بلمسة واحدة.
+            </p>
+
+            <div class="hero-btns">
+                <a href="login.php"    class="btn-primary">الدخول للنظام ←</a>
+                <a href="register.php" class="btn-outline">إنشاء حساب جديد</a>
+            </div>
+        </div>
+
+        <div class="hero-slider" id="heroSlider">
+            <img src="assets/images/slider/slide3.png" alt="آية قرآنية" class="active" />
+            <img src="assets/images/slider/slide4.png" alt="دعاء إسلامي" />
+            <img src="assets/images/slider/slide5.png" alt="حديث شريف" />
+            <div class="slider-dots">
+                <span class="slider-dot active" data-idx="0"></span>
+                <span class="slider-dot"        data-idx="1"></span>
+                <span class="slider-dot"        data-idx="2"></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="section">
+    <div class="container">
+        <div class="section-title animate-on-scroll">
+            <span class="label">✦ ما يميّز رتِّل ✦</span>
+            <h2>منصة شاملة لكل ما تحتاجه</h2>
+            <p>من التسميع إلى التقارير — كل شيء في مكان واحد</p>
+            <div class="title-line"></div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll" style="transition-delay:.05s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                        <path d="M6 8h2M6 12h2M16 8h2M16 12h2" />
+                    </svg>
+                </div>
+                <h3>مصحف تفاعلي</h3>
+                <p>تلوين الآيات المحفوظة والمراجعة وآخر توقف مع تشغيل صوتي لأشهر القراء.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.10s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-4a3 3 0 0 1 6 0v4M12 9v2M10 10h4" />
+                    </svg>
+                </div>
+                <h3>إدارة الحلقات</h3>
+                <p>أنشئ الحلقات وأسند المعلمين وتابع جداول الطلاب بسهولة تامة.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.15s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 11l3 3 8-8M20 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9" />
+                    </svg>
+                </div>
+                <h3>كشف الحضور</h3>
+                <p>سجِّل حضور الطلاب وأرسل إشعارات فورية عند الغياب بضغطة واحدة.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.20s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+                        <path d="M12 2a5 5 0 0 1 5 5v5a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z" />
+                    </svg>
+                </div>
+                <h3>نظام النقاط والشارات</h3>
+                <p>حفِّز الطلاب بنقاط ومستويات وشارات تُمنح تلقائياً عند الإنجاز.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.25s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 22V12M12 12C12 9 9 7 5 8M12 12C12 9 15 7 19 8M12 10C12 6 9 4 6 5M12 10C12 6 15 4 18 5M12 13c-2-2-5-2-7-1M12 13c2-2 5-2 7-1" />
+                    </svg>
+                </div>
+                <h3>حديقة الإنجازات</h3>
+                <p>شجرة لكل سورة يحفظها الطالب — حديقة بصرية تحكي رحلة الحفظ.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.30s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 3v18h18M18 9l-5 5-4-4-4 4" />
+                        <rect x="5" y="14" width="2" height="3" />
+                        <rect x="10" y="11" width="2" height="6" />
+                        <rect x="15" y="7" width="2" height="10" />
+                    </svg>
+                </div>
+                <h3>تقارير متقدمة</h3>
+                <p>تحليلات شاملة للأداء والحضور والتقدم لكل طالب وحلقة ومعلم.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.35s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                </div>
+                <h3>إشعارات فورية</h3>
+                <p>تنبيهات لحظية للطالب عند التسميع والغياب ومنح الشارات والرسائل.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.40s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+                <h3>نظام المراسلة</h3>
+                <p>تواصل مباشر بين الطالب والمعلم داخل المنصة بدون وسيط.</p>
+            </div>
+
+            <div class="feature-card animate-on-scroll" style="transition-delay:.45s">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                        <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" />
+                    </svg>
+                </div>
+                <h3>خطة الحفظ</h3>
+                <p>رسم خطة حفظ مفصّلة بأهداف وتواريخ وتتبع نسبة الإنجاز لكل طالب.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="roles" class="section">
+    <div class="container">
+        <div class="section-title animate-on-scroll">
+            <span class="label">✦ الأدوار الثلاثة ✦</span>
+            <h2>منصة تخدم الجميع</h2>
+            <p>كل دور بصلاحياته وأدواته الخاصة</p>
+            <div class="title-line"></div>
+        </div>
+
+        <div class="roles-grid">
+            <div class="role-card animate-on-scroll from-left">
+                <div class="role-img-wrap">
+                    <img src="assets/images/roles/admin_photo.jpg" alt="المدير" />
+                    <span class="role-badge">المدير</span>
+                </div>
+                <div class="role-body">
+                    <h3>المدير</h3>
+                    <p>يشرف على المنصة بالكامل ويتابع أداء المعلمين والطلاب والحلقات.</p>
+                    <ul class="role-features">
+                        <li>لوحة إحصائيات شاملة</li>
+                        <li>إدارة المعلمين والطلاب</li>
+                        <li>إنشاء الحلقات وإسناد المعلمين</li>
+                        <li>تقارير الأداء والحضور</li>
+                        <li>متابعة سجلات التسميع</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-card animate-on-scroll" style="transition-delay:.1s">
+                <div class="role-img-wrap">
+                    <img src="assets/images/roles/teacher_photo.png" alt="المعلم" />
+                    <span class="role-badge">المعلم</span>
+                </div>
+                <div class="role-body">
+                    <h3>المعلم</h3>
+                    <p>يتابع طلابه ويسجّل التسميع والحضور ويمنح الشارات والتشجيع.</p>
+                    <ul class="role-features">
+                        <li>تسجيل التسميع ومنح النقاط</li>
+                        <li>كشف الحضور اليومي</li>
+                        <li>متابعة تقدم كل طالب</li>
+                        <li>منح الأوسمة والشارات</li>
+                        <li>التواصل المباشر مع الطلاب</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-card animate-on-scroll from-right" style="transition-delay:.2s">
+                <div class="role-img-wrap">
+                    <img src="assets/images/roles/student_photo.png" alt="الطالب" />
+                    <span class="role-badge">الطالب</span>
+                </div>
+                <div class="role-body">
+                    <h3>الطالب</h3>
+                    <p>يستعرض خطته اليومية، يتابع نقاطه، ويتفاعل مع معلمه في بيئة محفزة.</p>
+                    <ul class="role-features">
+                        <li>مصحف شخصي تفاعلي</li>
+                        <li>متابعة خطة الحفظ والمراجعة</li>
+                        <li>رؤية حديقة الإنجازات الخاصة به</li>
+                        <li>تجميع النقاط والمنافسة في لوحة الصدارة</li>
+                        <li>مراسلة معلم الحلقة مباشرة</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="ayah-day" class="section">
+    <div class="container ayah-inner">
+        <span class="ayah-label">✦ آية اليوم ✦</span>
+        <div id="ayah-spinner" style="display: none;"></div>
+        <p id="ayah-text">"إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ"</p>
+        <p id="ayah-ref">سورة الحجر - الآية 9</p>
+        <p id="ayah-tafsir">يتكفل الله سبحانه وتعالى بحفظ كتابه العزيز من أي تحريف أو تبديل على مر العصور، ليظل نوراً وهدى للعالمين.</p>
+    </div>
+</section>
+
+<!-- ===== قسم مواقيت الصلاة — يُحدَّث تلقائياً من API ===== -->
+<section id="prayer-times" class="section">
+    <div class="container">
+        <div class="prayer-card">
+            <div class="prayer-header">
+                <div class="prayer-date">
+                    <strong>مواقيت الصلاة اليوم</strong>
+                    <span id="prayer-location-label">الخليل — فلسطين</span>
+                </div>
+                <div class="next-prayer-badge">
+                    <div class="np-label">الصلاة القادمة</div>
+                    <div class="np-name" id="next-prayer-name">—</div>
+                    <div class="np-timer" id="next-prayer-timer">--:--:--</div>
+                </div>
+            </div>
+
+            <!-- هيكل عظمي أثناء التحميل -->
+            <div class="prayer-skeleton" id="prayer-skeleton">
+                <div class="sk"></div><div class="sk"></div><div class="sk"></div>
+                <div class="sk"></div><div class="sk"></div>
+            </div>
+
+            <!-- صف مواقيت الصلاة الحقيقية -->
+            <div class="prayers-row" id="prayers-row" style="display:none;">
+                <div class="prayer-item" id="pi-fajr">
+                    <svg class="p-icon-svg" viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/>
+                        <path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
+                    </svg>
+                    <div class="p-name">الفجر</div>
+                    <div class="p-time" id="t-fajr">--:--</div>
+                </div>
+                <div class="prayer-item" id="pi-dhuhr">
+                    <svg class="p-icon-svg" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 6.34l1.42-1.42"/>
+                    </svg>
+                    <div class="p-name">الظهر</div>
+                    <div class="p-time" id="t-dhuhr">--:--</div>
+                </div>
+                <div class="prayer-item" id="pi-asr">
+                    <svg class="p-icon-svg" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                        <path d="M22 22H2M16 18H8"/>
+                    </svg>
+                    <div class="p-name">العصر</div>
+                    <div class="p-time" id="t-asr">--:--</div>
+                </div>
+                <div class="prayer-item" id="pi-maghrib">
+                    <svg class="p-icon-svg" viewBox="0 0 24 24">
+                        <path d="M12 2v4M4.93 4.93l2.83 2.83M2 12h4M19.07 4.93l-2.83 2.83M22 12h-4"/>
+                        <path d="M2 16h20M4 20h14M6 12a6 6 0 0 1 12 0c0 .73-.13 1.42-.37 2.07H6.37C6.13 13.42 6 12.73 6 12z"/>
+                    </svg>
+                    <div class="p-name">المغرب</div>
+                    <div class="p-time" id="t-maghrib">--:--</div>
+                </div>
+                <div class="prayer-item" id="pi-isha">
+                    <svg class="p-icon-svg" viewBox="0 0 24 24">
+                        <path d="M12 3a9 9 0 1 0 9 9 9.75 9.75 0 0 1-9-9z"/>
+                        <path d="M19 3v4M21 5h-4M10 6v2M11 7H9M15 15v2M16 16h-2"/>
+                    </svg>
+                    <div class="p-name">العشاء</div>
+                    <div class="p-time" id="t-isha">--:--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="cta" class="section-sm">
+    <div class="container">
+        <h2>ابدأ رحلتك القرآنية الآن</h2>
+        <p>انضم إلى مئات المراكز والحلقات التي تدير أعمالها بكل سهولة وإتقان عبر منصة رتِّل.</p>
+        <a href="register.php" class="btn-primary">ابدأ مجاناً اليوم</a>
+    </div>
+</section>
+
+<footer>
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <div class="logo-text">رتِّل</div>
+            <p>المنصة المتكاملة الأولى لإدارة وتطوير حلقات ومراكز تحفيظ القرآن الكريم بأحدث الأدوات التقنية والتعليمية.</p>
+        </div>
+        <div class="footer-col">
+            <h4>روابط سريعة</h4>
+            <ul>
+                <li><a href="#">الرئيسية</a></li>
+                <li><a href="#about">عن رتِّل</a></li>
+                <li><a href="#features">المميزات</a></li>
+                <li><a href="#roles">الأدوار</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>بوابة النظام</h4>
+            <ul>
+                <li><a href="login.php">تسجيل الدخول</a></li>
+                <li><a href="register.php">إنشاء حساب جديد</a></li>
+                <li><a href="#">الدعم الفني</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        جميع الحقوق محفوظة &copy; منصة رتِّل 2026
+    </div>
+</footer>
+
+<script>
+    // ============================================================
+    //  NAVBAR & MOBILE MENU
+    // ============================================================
+    const navbar    = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu= document.getElementById('mobile-menu');
+
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+    });
+
+    // ============================================================
+    //  SCROLL ANIMATIONS
+    // ============================================================
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // ============================================================
+    //  HERO SLIDER
+    // ============================================================
+    const slides = document.querySelectorAll('#heroSlider img');
+    const dots   = document.querySelectorAll('.slider-dot');
+    let currentSlide = 0;
+    function nextSlide() {
+        if (!slides.length) return;
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+    }
+    setInterval(nextSlide, 4000);
+
+    // ============================================================
+    //  PRAYER TIMES  — AlAdhan API  (الخليل، فلسطين)
+    //  Latitude: 31.5326  Longitude: 35.0998  Method: 5 (Egypt)
+    // ============================================================
+    const PRAYER_NAMES_AR = {
+        Fajr:'الفجر', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء'
+    };
+    const PRAYER_IDS = ['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+    const PRAYER_EL_IDS = {
+        Fajr:'fajr', Dhuhr:'dhuhr', Asr:'asr', Maghrib:'maghrib', Isha:'isha'
+    };
+
+    let prayerTimesMs = {}; // اسم الصلاة → timestamp اليوم بالمللي ثانية
+    let countdownInterval = null;
+
+    // تحويل "HH:MM" إلى Date اليوم
+    function timeStrToDate(hhmm) {
+        const [h, m] = hhmm.split(':').map(Number);
+        const d = new Date();
+        d.setHours(h, m, 0, 0);
+        return d;
+    }
+
+    // صيغة HH:MM بالعربية (لعرض الوقت)
+    function fmt(hhmm) {
+        return hhmm; // نعرضها كما هي من الـ API
+    }
+
+    // اختيار الصلاة القادمة
+    function getNextPrayer() {
+        const now = Date.now();
+        for (const name of PRAYER_IDS) {
+            if (prayerTimesMs[name] > now) return name;
+        }
+        // إذا تجاوزنا العشاء → الفجر غداً
+        const fajrTomorrow = new Date(prayerTimesMs['Fajr']);
+        fajrTomorrow.setDate(fajrTomorrow.getDate() + 1);
+        return 'Fajr_tomorrow';
+    }
+
+    function updateCountdown() {
+        const now = Date.now();
+        let next = getNextPrayer();
+        let targetMs;
+        let displayName;
+
+        if (next === 'Fajr_tomorrow') {
+            const fajrTomorrow = new Date(prayerTimesMs['Fajr']);
+            fajrTomorrow.setDate(fajrTomorrow.getDate() + 1);
+            targetMs = fajrTomorrow.getTime();
+            displayName = 'الفجر';
+        } else {
+            targetMs = prayerTimesMs[next];
+            displayName = PRAYER_NAMES_AR[next];
+        }
+
+        // تحديث الصلاة النشطة في الواجهة
+        PRAYER_IDS.forEach(n => {
+            document.getElementById('pi-' + PRAYER_EL_IDS[n]).classList.toggle('active', n === next);
+        });
+
+        document.getElementById('next-prayer-name').textContent = displayName;
+
+        const diff = Math.max(0, targetMs - now);
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('next-prayer-timer').textContent =
+            String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+
+    async function loadPrayerTimes() {
+        try {
+            // الخليل: 31.5326, 35.0998  | method=5 (Egyptian)
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2,'0');
+            const mm = String(today.getMonth()+1).padStart(2,'0');
+            const yyyy = today.getFullYear();
+            const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=31.5326&longitude=35.0998&method=5`;
+
+            const res  = await fetch(url);
+            const data = await res.json();
+            const timings = data.data.timings;
+
+            // ملء الأوقات في الواجهة
+            document.getElementById('t-fajr').textContent    = fmt(timings.Fajr);
+            document.getElementById('t-dhuhr').textContent   = fmt(timings.Dhuhr);
+            document.getElementById('t-asr').textContent     = fmt(timings.Asr);
+            document.getElementById('t-maghrib').textContent = fmt(timings.Maghrib);
+            document.getElementById('t-isha').textContent    = fmt(timings.Isha);
+
+            // تخزين الأوقات كـ timestamps
+            prayerTimesMs = {
+                Fajr:    timeStrToDate(timings.Fajr).getTime(),
+                Dhuhr:   timeStrToDate(timings.Dhuhr).getTime(),
+                Asr:     timeStrToDate(timings.Asr).getTime(),
+                Maghrib: timeStrToDate(timings.Maghrib).getTime(),
+                Isha:    timeStrToDate(timings.Isha).getTime(),
+            };
+
+            // إخفاء الهيكل العظمي وعرض الصف الحقيقي
+            document.getElementById('prayer-skeleton').style.display = 'none';
+            document.getElementById('prayers-row').style.display = 'grid';
+
+            // تشغيل العداد
+            updateCountdown();
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(updateCountdown, 1000);
+
+        } catch (err) {
+            console.error('Prayer times fetch error:', err);
+            // في حال فشل الاتصال: عرض رسالة بسيطة
+            document.getElementById('prayer-skeleton').innerHTML =
+                '<p style="color:var(--color-muted);grid-column:1/-1;text-align:center;padding:20px;">تعذّر تحميل مواقيت الصلاة. يرجى التحقق من الاتصال بالإنترنت.</p>';
+        }
+    }
+
+    // تشغيل عند تحميل الصفحة
+    loadPrayerTimes();
+</script>
+
+</body>
+</html>

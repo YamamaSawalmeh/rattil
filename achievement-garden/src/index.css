@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-amiri: "Amiri", serif;
+
+  --color-primary-green: #1b4332;
+  --color-secondary-green: #2d6a4f;
+  --color-gold: #d4af37;
+  --color-gold-dark: #b8860b;
+  --color-cream: #fdfcf8;
+  --color-muted-green: #f1f3e9;
+  --color-soft-sand: #f5f5f0;
+  --color-tile-grass: #f8f9f2;
+}
+
+@layer utilities {
+  .isometric-container {
+    transform: rotateX(60deg) rotateZ(-45deg);
+    transform-style: preserve-3d;
+  }
+  .isometric-tile {
+    transform-style: preserve-3d;
+  }
+  .anti-isometric {
+    transform: rotateZ(45deg) rotateX(-60deg);
+  }
+  .floating-island {
+    animation: floating 6s ease-in-out infinite;
+  }
+  @keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #1b433220;
+    border-radius: 10px;
+  }
+}
+
+body {
+  font-family: var(--font-amiri);
+  background-color: var(--color-cream);
+  color: var(--color-primary-green);
+  direction: rtl;
+}
+
+.font-inter {
+  font-family: var(--font-sans);
+}

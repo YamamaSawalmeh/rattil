@@ -1,0 +1,96 @@
+/* =====================================================
+   RATTIL — Unified Sidebar CSS v2
+   ===================================================== */
+:root {
+    --primary:        #1B4332;
+    --secondary:      #2D6A4F;
+    --accent:         #D4AF37;
+    --accent-light:   rgba(212,175,55,0.12);
+    --sw:             260px;
+    --t:              .25s ease;
+}
+.sidebar {
+    position: fixed; top: 0; right: 0;
+    width: var(--sw); height: 100vh;
+    background: var(--primary);
+    display: flex; flex-direction: column;
+    z-index: 100;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.08);
+    transition: transform var(--t);
+}
+.sb-logo {
+    padding: 26px 20px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 12px;
+}
+.sb-logo img  { height: 38px; width: auto; object-fit: contain; }
+.sb-logo span { color: #fff; font-size: 1.35rem; font-weight: 700; font-family: 'Amiri', serif; }
+.sb-user {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sb-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent); color: var(--primary);
+    font-weight: 700; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.sb-user-info .sb-name { color: #fff; font-weight: 600; font-size: .92rem; }
+.sb-user-info .sb-role { color: var(--accent); font-size: .74rem; margin-top: 2px; }
+.sb-nav { padding: 10px 10px; flex: 1; overflow-y: auto; }
+.sb-section {
+    font-size: .68rem; color: rgba(255,255,255,.32);
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 10px 6px 4px;
+}
+.sb-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 11px 12px; border-radius: 12px;
+    color: rgba(255,255,255,0.65);
+    font-size: .96rem; margin-bottom: 3px;
+    text-decoration: none;
+    transition: all var(--t); position: relative;
+}
+.sb-item:hover  { background: rgba(255,255,255,.08); color: #fff; }
+.sb-item.active { background: rgba(255,255,255,.10); color: #fff; }
+.sb-item.active::after {
+    content: '';
+    position: absolute; right: 0; top: 8px; bottom: 8px;
+    width: 3px; background: var(--accent);
+    border-radius: 2px 0 0 2px;
+}
+.sb-ic {
+    width: 20px; height: 20px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--accent); flex-shrink: 0;
+}
+.sb-ic svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sb-bottom {
+    padding: 10px 10px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+.sb-logout {
+    display: flex; align-items: center; gap: 11px;
+    padding: 11px 12px; border-radius: 12px;
+    color: rgba(255,120,120,0.75);
+    font-size: .96rem; text-decoration: none;
+    transition: all var(--t);
+}
+.sb-logout:hover { background: rgba(220,50,50,.08); color: #ff8080; }
+.main { margin-right: var(--sw); min-height: 100vh; }
+.main-content { margin-right: var(--sw); min-height: 100vh; }
+.sb-toggle-btn {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer;
+    color: var(--primary); padding: 4px;
+}
+.sb-toggle-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+@media (max-width: 992px) {
+    .sidebar { transform: translateX(260px); }
+    .sidebar.open { transform: translateX(0); }
+    .main, .main-content { margin-right: 0; }
+    .sb-toggle-btn { display: inline-flex !important; }
+}

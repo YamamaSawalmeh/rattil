@@ -1,0 +1,8 @@
+{
+  "name": "Rattil - Achievement Garden",
+  "description": "An interactive, isometric 3D achievement garden for Quran students to track their progress and surah completions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

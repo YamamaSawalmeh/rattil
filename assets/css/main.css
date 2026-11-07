@@ -1,0 +1,353 @@
+/* RATTIL — main.css | النسخة النهائية الموحدة */
+
+/* -------------------------------------------------------
+   CSS Variables — كل الأسماء المستخدمة في كل الصفحات
+------------------------------------------------------- */
+:root {
+    /* الألوان الأساسية */
+    --p:              #1B4332;
+    --s:              #2D6A4F;
+    --gold:           #D4AF37;
+    --gd:             #B8860B;
+    --cream:          #FAF7F0;
+    --white:          #fff;
+    --text:           #1A1A1A;
+    --muted:          #6B7280;
+    --danger:         #DC2626;
+    --success:        #16A34A;
+    --warning:        #D97706;
+    --info:           #2563EB;
+
+    /* Aliases للمدير (--color-*) */
+    --color-primary:   #1B4332;
+    --color-secondary: #2D6A4F;
+    --color-gold:      #D4AF37;
+    --color-gold-dark: #B8860B;
+    --color-cream:     #FAF7F0;
+    --color-muted:     #6B7280;
+    --color-danger:    #DC2626;
+    --color-success:   #16A34A;
+    --color-warning:   #D97706;
+    --color-info:      #2563EB;
+
+    /* Aliases للمعلم (--primary, --secondary...) */
+    --primary:        #1B4332;
+    --secondary:      #2D6A4F;
+    --gold-dark:      #B8860B;
+    --light:          #FAF7F0;
+    --gray:           #6B7280;
+
+    /* Border Radius */
+    --r:              16px;
+    --r-sm:           8px;
+    --r-lg:           24px;
+    --radius:         16px;
+    --radius-md:      16px;
+    --radius-sm:      8px;
+    --radius-lg:      24px;
+
+    /* Shadows */
+    --shadow:         0 2px 10px rgba(0,0,0,.09);
+    --shadow-sm:      0 1px 4px rgba(0,0,0,.08);
+    --shadow-md:      0 4px 16px rgba(0,0,0,.12);
+    --shadow-lg:      0 8px 28px rgba(0,0,0,.16);
+
+    /* Transition */
+    --t:              .25s ease;
+    --transition:     all .25s ease;
+
+    /* Fonts */
+    --font:           'Amiri', serif;
+    --font-ar:        'Amiri', serif;
+
+    /* Sidebar Width */
+    --sw:             240px;
+    --sidebar-width:  240px;
+}
+
+/* -------------------------------------------------------
+   Reset
+------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html  { scroll-behavior: smooth; }
+body  { font-family: var(--font); background: var(--cream); color: var(--text); direction: rtl; min-height: 100vh; }
+a     { text-decoration: none; color: inherit; }
+img   { max-width: 100%; display: block; }
+button, input, select, textarea { font-family: var(--font); }
+
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 99px; }
+
+/* -------------------------------------------------------
+   Sidebar — النمط المشترك للمعلم والطالب
+------------------------------------------------------- */
+.sidebar {
+    position: fixed; top: 0; right: 0;
+    width: var(--sw); height: 100vh;
+    background: var(--p); display: flex;
+    flex-direction: column; z-index: 100;
+    transition: transform var(--t);
+}
+.sb-logo { padding: 22px 18px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 10px; }
+.sb-logo img  { height: 38px; }
+.sb-logo span { color: #fff; font-size: 1.25rem; font-weight: 700; }
+.sb-nav { padding: 14px 10px; flex: 1; overflow-y: auto; }
+.sb-item { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 11px; color: rgba(255,255,255,.7); font-size: .98rem; margin-bottom: 3px; transition: var(--t); }
+.sb-item:hover, .sb-item.active { background: rgba(255,255,255,.13); color: #fff; }
+.sb-item .ic { font-size: 1.15rem; width: 22px; text-align: center; }
+.sb-bottom { padding: 14px 10px; border-top: 1px solid rgba(255,255,255,.1); }
+.sb-user { display: flex; align-items: center; gap: 9px; padding: 9px; }
+
+/* Sidebar المعلم (class مختلف) */
+.sidebar-logo { padding: 28px 20px 20px; border-bottom: 1px solid rgba(255,255,255,.1); text-align: center; }
+.sidebar-logo .logo-text { font-family: var(--font); font-size: 2rem; color: var(--gold); letter-spacing: 1px; }
+.sidebar-logo .logo-sub  { font-size: .8rem; color: rgba(255,255,255,.5); margin-top: 2px; }
+.sidebar-user { padding: 20px; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; align-items: center; gap: 12px; }
+.sidebar-user-info .name { color: #fff; font-weight: 600; font-size: .95rem; }
+.sidebar-user-info .role { color: var(--gold); font-size: .78rem; }
+.sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.nav-link { display: flex; align-items: center; gap: 12px; padding: 11px 20px; color: rgba(255,255,255,.75); text-decoration: none; transition: var(--t); font-size: .92rem; position: relative; }
+.nav-link:hover, .nav-link.active { background: rgba(255,255,255,.1); color: #fff; }
+.nav-link.active::before { content: ''; position: absolute; right: 0; top: 6px; bottom: 6px; width: 3px; background: var(--gold); border-radius: 2px 0 0 2px; }
+.nav-link .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.08); }
+
+/* Main content */
+.main { margin-right: var(--sw); min-height: 100vh; }
+.main-content { margin-right: var(--sidebar-width); min-height: 100vh; }
+
+/* -------------------------------------------------------
+   Navbar المدير
+------------------------------------------------------- */
+.navbar {
+    background: var(--white); border-bottom: 1px solid rgba(27,67,50,.08);
+    padding: 0 28px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+.navbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.navbar-logo  { height: 36px; }
+.navbar-title { font-size: 1.3rem; font-weight: 700; color: var(--color-primary); }
+.navbar-nav   { display: flex; align-items: center; gap: 4px; }
+.navbar-nav .nav-link {
+    padding: 8px 14px; border-radius: 10px; color: var(--color-primary);
+    opacity: .75; font-size: .92rem; transition: var(--t);
+    display: flex; align-items: center; gap: 6px; position: relative;
+}
+.navbar-nav .nav-link::before { display: none; }
+.navbar-nav .nav-link:hover  { background: rgba(27,67,50,.06); opacity: 1; }
+.navbar-nav .nav-link.active { background: rgba(27,67,50,.08); opacity: 1; font-weight: 700; }
+.navbar-actions { display: flex; align-items: center; gap: 12px; }
+
+/* User Menu */
+.user-menu { display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative; padding: 6px 10px; border-radius: 10px; transition: var(--t); }
+.user-menu:hover { background: var(--color-cream); }
+.user-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0; }
+.user-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 12px; box-shadow: var(--shadow-md); border: 1px solid #eee; min-width: 160px; overflow: hidden; display: none; z-index: 200; }
+.user-dropdown.show { display: block; }
+.user-dropdown a { display: flex; align-items: center; gap: 8px; padding: 11px 16px; color: var(--color-primary); font-size: .9rem; transition: background var(--t); }
+.user-dropdown a:hover { background: var(--color-cream); }
+.user-dropdown a.danger { color: var(--color-danger); }
+
+/* Topbar الطالب/المعلم المشترك */
+.topbar { background: var(--white); padding: 14px 26px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 50; }
+.topbar h1 { font-size: 1.35rem; color: var(--p); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+/* Page Header المشترك */
+.page-header { padding: 20px 28px 0; margin-bottom: 28px; }
+.page-header h1 { font-size: 1.5rem; color: var(--color-primary); margin-bottom: 4px; }
+.page-header p  { color: var(--color-muted); font-size: .9rem; }
+
+/* -------------------------------------------------------
+   Avatar
+------------------------------------------------------- */
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--gold); color: var(--p); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0; cursor: pointer; }
+
+/* -------------------------------------------------------
+   Notification Button
+------------------------------------------------------- */
+.notif-btn { position: relative; background: var(--cream); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--t); }
+.notif-btn:hover { background: #e5e5e5; }
+.notif-badge { position: absolute; top: -3px; left: -3px; background: var(--danger); color: #fff; font-size: .65rem; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
+
+/* Notification Panel */
+.notif-panel { position: fixed; top: 68px; left: 16px; width: 320px; max-height: 420px; background: #fff; border-radius: 16px; box-shadow: var(--shadow-md); border: 1px solid #eee; z-index: 500; display: none; overflow: hidden; flex-direction: column; }
+.notif-panel.open { display: flex; }
+.notif-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; font-weight: 700; color: var(--color-primary); font-size: .95rem; }
+.notif-panel-list { overflow-y: auto; max-height: 360px; }
+.notif-item { display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #f8f8f8; cursor: pointer; transition: background var(--t); }
+.notif-item:hover { background: #fafafa; }
+.notif-item.unread { background: rgba(212,175,55,.05); }
+.notif-item-title { font-size: .88rem; color: #222; font-weight: 700; margin-bottom: 2px; }
+.notif-item-body  { font-size: .8rem; color: #666; line-height: 1.4; }
+.notif-item-time  { font-size: .74rem; color: #9ca3af; margin-top: 3px; }
+
+/* -------------------------------------------------------
+   Cards
+------------------------------------------------------- */
+.card { background: var(--white); border-radius: var(--r); padding: 22px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,.04); }
+.card-title { font-size: 1.1rem; font-weight: 700; color: var(--p); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+/* -------------------------------------------------------
+   Buttons
+------------------------------------------------------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 10px; border: none; font-size: .97rem; font-weight: 700; cursor: pointer; transition: var(--t); }
+.btn-primary, .btn-p   { background: var(--p); color: #fff; }
+.btn-primary:hover, .btn-p:hover { background: var(--s); transform: translateY(-1px); }
+.btn-secondary, .btn-sec { background: var(--cream); color: var(--p); border: 1.5px solid #e5e5e5; }
+.btn-secondary:hover, .btn-sec:hover { background: #eee; }
+.btn-gold, .btn-g { background: var(--gold); color: var(--p); }
+.btn-gold:hover, .btn-g:hover { background: var(--gd); }
+.btn-danger, .btn-d { background: var(--danger); color: #fff; }
+.btn-danger:hover, .btn-d:hover { background: #b91c1c; }
+.btn-sm { padding: 7px 14px; font-size: .87rem; border-radius: 8px; }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* -------------------------------------------------------
+   Form Inputs
+------------------------------------------------------- */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: .9rem; color: var(--p); font-weight: 700; margin-bottom: 7px; }
+.form-input, .form-control {
+    width: 100%; padding: 11px 13px;
+    border: 1.5px solid #e5e7eb; border-radius: 10px;
+    font-size: 1rem; background: var(--cream); color: var(--text);
+    outline: none; transition: border-color var(--t), box-shadow var(--t);
+}
+.form-input:focus, .form-control:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.12); background: #fff; }
+.form-input::placeholder, .form-control::placeholder { color: #bbb; }
+.form-input:disabled, .form-control:disabled { opacity: .6; cursor: not-allowed; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-select, select.form-input { cursor: pointer; }
+.form-group .hint { font-size: .78rem; color: #aaa; }
+
+/* -------------------------------------------------------
+   Alerts
+------------------------------------------------------- */
+.alert { padding: 12px 16px; border-radius: 10px; font-size: .92rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.alert-ok, .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.alert-err, .alert-error   { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+.alert-warn  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.alert-info  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+/* -------------------------------------------------------
+   Pills / Badges
+------------------------------------------------------- */
+.pill, .badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: .78rem; font-weight: 700; }
+.pill-green  { background: rgba(34,197,94,.12); color: #15803d; }
+.pill-red    { background: rgba(239,68,68,.12); color: #dc2626; }
+.pill-gold   { background: rgba(212,175,55,.15); color: var(--gd); }
+.pill-blue   { background: rgba(37,99,235,.1); color: #1d4ed8; }
+.pill-gray   { background: #f1f5f9; color: #64748b; }
+.grade-badge { padding: 3px 10px; border-radius: 20px; font-size: .78rem; font-weight: 700; }
+.grade-ممتاز       { background: #d1fae5; color: #065f46; }
+.grade-جيد\ جداً   { background: #dbeafe; color: #1e40af; }
+.grade-جيد          { background: #e0f2fe; color: #0369a1; }
+.grade-مقبول        { background: #fef9c3; color: #713f12; }
+.grade-يحتاج\ مراجعة { background: #fee2e2; color: #991b1b; }
+
+/* -------------------------------------------------------
+   Progress Bar
+------------------------------------------------------- */
+.prog-wrap, .progress { background: #e5e7eb; border-radius: 99px; height: 8px; overflow: hidden; }
+.prog-fill, .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--p), var(--s)); transition: width .6s ease; }
+.prog-sm { height: 5px; } .prog-lg { height: 12px; }
+
+/* -------------------------------------------------------
+   Stats Grid
+------------------------------------------------------- */
+.stats-grid { display: grid; gap: 14px; margin-bottom: 22px; }
+.s4, .stats-grid.s4 { grid-template-columns: repeat(4,1fr); }
+.s3, .stats-grid.s3 { grid-template-columns: repeat(3,1fr); }
+.s2, .stats-grid.s2 { grid-template-columns: repeat(2,1fr); }
+.stat-card { background: var(--white); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,.04); transition: var(--t); }
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.stat-icon  { font-size: 1.7rem; margin-bottom: 10px; }
+.stat-label { font-size: .83rem; color: var(--muted); margin-bottom: 3px; }
+.stat-value { font-size: 1.7rem; font-weight: 700; color: var(--p); }
+
+/* Stats المدير */
+.stats-card { background: var(--white); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,.04); transition: var(--transition); }
+.stats-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+/* -------------------------------------------------------
+   Table
+------------------------------------------------------- */
+.table-wrap { overflow-x: auto; border-radius: var(--r); }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+thead th { background: var(--p); color: #fff; padding: 12px 16px; text-align: right; font-weight: 700; white-space: nowrap; }
+tbody td { padding: 11px 16px; border-bottom: 1px solid #f0f0f0; }
+tbody tr:hover { background: rgba(27,67,50,.03); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* -------------------------------------------------------
+   Modal
+------------------------------------------------------- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal, .modal-container { background: var(--white); border-radius: 20px; padding: 28px; width: 100%; max-width: 480px; animation: mup .3s ease; max-height: 90vh; overflow-y: auto; }
+@keyframes mup { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.modal h3, .modal-header h3 { font-size: 1.2rem; color: var(--p); margin-bottom: 18px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.modal-btns { display: flex; gap: 10px; margin-top: 18px; }
+.modal-footer { display: flex; gap: 10px; margin-top: 18px; justify-content: flex-end; }
+.modal-close { background: none; border: none; font-size: 1.2rem; color: var(--muted); cursor: pointer; }
+
+/* -------------------------------------------------------
+   Toast
+------------------------------------------------------- */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 11px 22px; border-radius: 99px; font-size: .93rem; z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* -------------------------------------------------------
+   Spinner / Loading
+------------------------------------------------------- */
+.spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; display: none; }
+.spinner-p { border-color: rgba(27,67,50,.2); border-top-color: var(--p); }
+@keyframes spin { to{transform:rotate(360deg)} }
+.skeleton { background: linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--r); }
+@keyframes shimmer { to{background-position:-200% 0} }
+.loading-state { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px; padding: 60px; color: var(--muted); }
+.spinner-lg { width: 40px; height: 40px; border: 3px solid #eee; border-top-color: var(--p); border-radius: 50%; animation: spin .8s linear infinite; }
+
+/* -------------------------------------------------------
+   Utility Classes
+------------------------------------------------------- */
+.content { padding: 24px; }
+.page-content { padding: 28px; }
+.mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; }
+.mb-4 { margin-bottom: 16px; } .mb-6 { margin-bottom: 24px; }
+.text-muted { color: var(--muted); } .text-center { text-align: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-center  { display: flex; align-items: center; justify-content: center; }
+.gap-2 { gap: 8px; } .gap-3 { gap: 12px; }
+.empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
+.empty-state .ei { font-size: 3rem; margin-bottom: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 320px; gap: 18px; }
+.w-full { width: 100%; }
+
+/* -------------------------------------------------------
+   Responsive
+------------------------------------------------------- */
+@media (max-width: 1100px) {
+    .s4, .stats-grid.s4 { grid-template-columns: repeat(2,1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+    .sidebar { transform: translateX(var(--sw)); }
+    .sidebar.open { transform: translateX(0); }
+    .main, .main-content { margin-right: 0; }
+    .s3, .stats-grid.s3 { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .content, .page-content { padding: 16px; }
+    .topbar { padding: 12px 16px; }
+    .navbar { padding: 0 16px; }
+    .navbar-nav { display: none; }
+}
+@media (max-width: 480px) {
+    .s4,.s3,.s2, .stats-grid { grid-template-columns: 1fr 1fr; }
+    .modal, .modal-container { padding: 20px 16px; border-radius: 16px; }
+}

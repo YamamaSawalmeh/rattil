@@ -1,0 +1,8 @@
+.idea/
+.vscode/
+*.zip
+*.rar
+uploads/**/*
+!uploads/**/.gitkeep
+.env
+config/db.local.php

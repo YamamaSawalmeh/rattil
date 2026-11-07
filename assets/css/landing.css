@@ -1,0 +1,34 @@
+/* RATTIL — landing.css | أنماط الصفحة الرئيسية */
+.hero-section{padding:120px 0 80px;position:relative;overflow:hidden;}
+.hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;}
+.hero-badge{margin-bottom:20px;}
+.badge-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(212,175,55,.12);color:var(--gd);border:1px solid rgba(212,175,55,.3);padding:6px 16px;border-radius:99px;font-size:.9rem;}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:bdpulse 2s infinite;}
+@keyframes bdpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.hero-title{font-size:clamp(2.4rem,5vw,4rem);color:var(--p);line-height:1.25;margin-bottom:8px;}
+.hero-title .hl{color:var(--gd);}
+.hero-tagline{font-size:1.2rem;color:var(--muted);margin-bottom:20px;font-style:italic;border-right:3px solid var(--gold);padding-right:14px;}
+.hero-desc{font-size:1.1rem;color:var(--muted);line-height:1.9;margin-bottom:32px;max-width:500px;}
+.hero-btns{display:flex;flex-wrap:wrap;gap:14px;}
+.section-title{text-align:center;margin-bottom:52px;}
+.section-title .lbl{display:inline-block;font-size:.85rem;letter-spacing:.1em;color:var(--gd);margin-bottom:12px;}
+.section-title h2{font-size:clamp(2rem,4vw,2.8rem);color:var(--p);line-height:1.3;}
+.section-title p{color:var(--muted);font-size:1.05rem;max-width:560px;margin:14px auto 0;line-height:1.8;}
+.title-line{width:60px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gd));margin:14px auto 0;border-radius:99px;}
+.feature-card{background:var(--cream);border-radius:var(--r);padding:32px 26px;border:1px solid rgba(27,67,50,.07);transition:var(--t);position:relative;overflow:hidden;}
+.feature-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:0;background:linear-gradient(to bottom,var(--gold),var(--s));transition:height .4s;}
+.feature-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);}
+.feature-card:hover::before{height:100%;}
+.feature-icon{width:56px;height:56px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--p),var(--s));display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin-bottom:18px;box-shadow:0 4px 12px rgba(27,67,50,.25);}
+.role-card{border-radius:var(--r-lg);overflow:hidden;background:#fff;box-shadow:var(--shadow);transition:var(--t);}
+.role-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+.role-img-wrap{position:relative;overflow:hidden;aspect-ratio:4/3;}
+.role-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+.role-card:hover .role-img-wrap img{transform:scale(1.05);}
+.role-badge{position:absolute;top:12px;right:12px;background:var(--p);color:#fff;padding:4px 12px;border-radius:99px;font-size:.82rem;}
+.role-body{padding:24px 20px;}
+.role-features{list-style:none;margin-top:14px;}
+.role-features li{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.92rem;border-bottom:1px solid rgba(27,67,50,.05);}
+.role-features li:last-child{border-bottom:none;}
+.role-features li::before{content:'✦';color:var(--gold);font-size:.7rem;flex-shrink:0;}
+@media(max-width:768px){.hero-grid{grid-template-columns:1fr;}.hero-title,.hero-desc{text-align:center;}.hero-btns{justify-content:center;}}

@@ -1,0 +1,30 @@
+/* RATTIL — quran.css | أنماط المصحف التفاعلي */
+.ayahs-wrap{line-height:3.4;font-family:'Scheherazade New',serif;font-size:1.4rem;text-align:justify;color:#1a1a1a;}
+.ayah-span{display:inline;padding:2px 4px;border-radius:5px;margin:0 1px;cursor:pointer;transition:background .2s;}
+.ayah-span:hover{background:rgba(212,175,55,.12);}
+.ayah-span.memorized{background:rgba(34,197,94,.18);border-bottom:2px solid #22c55e;}
+.ayah-span.reviewing{background:rgba(250,204,21,.18);border-bottom:2px solid #eab308;}
+.ayah-span.last_stop{background:rgba(59,130,246,.18);border-bottom:2px solid #3b82f6;}
+.ayah-span.playing{background:rgba(212,175,55,.28);animation:qpulse .9s infinite;}
+@keyframes qpulse{0%,100%{opacity:1}50%{opacity:.6}}
+.ayah-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:rgba(27,67,50,.08);font-size:.72rem;color:var(--p);margin:0 3px;font-family:'Amiri',serif;vertical-align:middle;}
+.bismillah-q{font-family:'Scheherazade New',serif;font-size:1.7rem;text-align:center;color:var(--gd);margin-bottom:20px;padding:16px;background:rgba(212,175,55,.06);border-radius:12px;}
+.surah-hdr{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0e8d0;}
+.surah-name-q{font-family:'Scheherazade New',serif;font-size:1.9rem;color:var(--p);margin-bottom:4px;}
+.surah-meta-q{font-size:.85rem;color:var(--muted);}
+.quran-legend{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.ql-item{display:flex;align-items:center;gap:7px;font-size:.83rem;color:var(--p);}
+.ql-dot{width:16px;height:16px;border-radius:4px;}
+.ctx-menu{position:fixed;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:1px solid #eee;z-index:999;overflow:hidden;min-width:160px;display:none;}
+.ctx-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;font-size:.92rem;color:var(--p);transition:background .15s;}
+.ctx-item:hover{background:var(--cream);}
+.audio-player{background:linear-gradient(135deg,var(--p),var(--s));border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(27,67,50,.25);}
+.play-btn{width:40px;height:40px;border-radius:50%;background:var(--gold);border:none;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--t);}
+.play-btn:hover{background:var(--gd);}
+.audio-info{color:#fff;}
+.audio-info .ai-title{font-size:.95rem;font-weight:700;}
+.audio-info .ai-sub{font-size:.78rem;opacity:.7;}
+.audio-prog{flex:1;}
+.audio-bar{height:4px;background:rgba(255,255,255,.2);border-radius:99px;cursor:pointer;position:relative;}
+.audio-fill{height:100%;background:var(--gold);border-radius:99px;width:0%;transition:width .2s;}
+.audio-time{display:flex;justify-content:space-between;font-size:.7rem;color:rgba(255,255,255,.6);margin-top:3px;}
